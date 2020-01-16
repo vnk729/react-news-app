@@ -1,6 +1,7 @@
 import React from 'react';
 import { Add } from './components/Add';
 import { News } from './components/News';
+import { Container, Row, Col, Spinner } from 'react-bootstrap';
 import './App.css';
 
 class App extends React.Component {
@@ -9,34 +10,19 @@ class App extends React.Component {
     isLoading: false,
   }
 
-  static getDerivedStateFromProps(props, state) {
-    if (!Array.isArray(state.news)) {
-      return null;
-    }
-
-    const nextFilteredNews = [...state.news];
-    nextFilteredNews.forEach((item) => {
-      if (item.bigText.toLowerCase().indexOf('pubg') !== -1) {
-        item.bigText = 'СПАМ';
-      }
-    });
-
-    return { filteredNews: nextFilteredNews };
-  }
-
   componentDidMount() {
     this.setState({ isLoading: true });
 
-    fetch('http://localhost:3000/data/newsData.json')
+    fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=189750e5489a40ce8a2c7b5f95ae1280')
       .then((res) => res.json())
       .then((data) => setTimeout(() => {
-        this.setState({ news: data, isLoading: false });
+        console.log(data.articles);
+        this.setState({ news: data.articles, isLoading: false });
       }, 1000));
   }
 
   handleAddNews = (data) => {
-    const { news } = this.state;
-    const nextNews = [data, ...news];
+    const nextNews = [data, ...this.state.news];
     this.setState({ news: nextNews });
   }
 
@@ -44,12 +30,20 @@ class App extends React.Component {
     const { news, isLoading } = this.state;
 
     return (
-      <React.Fragment>
+      <Container>
         <Add onAddNews={this.handleAddNews} />
-        <h3>Новости</h3>
-        {isLoading && <p>Загружаю...</p>}
-        {Array.isArray(news) && <News data={news} />}
-      </React.Fragment>
+        <Row>
+          <h3>News</h3>
+        </Row>
+        <Row>
+          {isLoading && (
+            <Spinner animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          )}
+          {Array.isArray(news) && <News data={news} />}
+        </Row>
+      </Container>
     );
   }
 }

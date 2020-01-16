@@ -1,15 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Article } from './Article';
+import { uniqueId } from 'lodash';
 
 class News extends React.Component {
   renderNews = () => {
     const { data } = this.props;
 
     if (!data.length) {
-      return <p>К сожалению новостей нет</p>;
+      return <p>No news</p>;
     }
-    return data.map((item) => <Article key={item.id} data={item} />);
+
+    return data.map((item) => {
+      if (!item.author) {
+        item.author = 'no name';
+      }
+      return <Article key={uniqueId()} data={item} />
+    });
   }
 
   render() {
@@ -20,7 +27,7 @@ class News extends React.Component {
         {this.renderNews()}
         {data.length ? (
           <strong className={'news__count'}>
-            Всего новостей: {data.length}
+            Total news: {data.length}
           </strong>
         ) : null}
       </div>

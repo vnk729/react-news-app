@@ -12,15 +12,15 @@ class Article extends React.Component {
   }
 
   render() {
-    const { data: { author, text, bigText } } = this.props;
+    const { data: { author, title, description } } = this.props;
     const { visible } = this.state;
 
     return (
       <div className="article">
         <p className="news__author">{author}:</p>
-        <p className="news__text">{text}</p>
-        {!visible && <a onClick={this.handleReadMoreClick} href="#readmore" className="news__readmore">Подробнее</a>}
-        {visible && <p className="news__big-text">{bigText}</p>}
+        <p className="news__text">{title}</p>
+        {!visible && <a onClick={this.handleReadMoreClick} href="#readmore" className="news__readmore">Read more</a>}
+        {visible && <p className="news__big-text">{description}</p>}
       </div>
     );
   }
@@ -28,10 +28,9 @@ class Article extends React.Component {
 
 Article.propTypes = {
   data: PropTypes.shape({
-    id: PropTypes.number.isRequired,
     author: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired,
-    bigText: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
   }),
 };
 

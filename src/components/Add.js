@@ -1,25 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { uniqueId } from 'lodash';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 
 class Add extends React.Component {
   state = {
     name: '',
-    text: '',
-    bigText: '',
+    title: '',
+    description: '',
     agree: false,
   }
 
   onBtnClickHandler = (e) => {
     e.preventDefault();
-    const { name, text, bigText } = this.state;
+    const { name, title, description } = this.state;
+
     this.props.onAddNews({
-      id: +new Date(),
+      id: uniqueId(),
       author: name,
-      text,
-      bigText,
+      title,
+      description,
     });
 
-    this.setState({ name: '', text: '', bigText: '' });
+    this.setState({ name: '', title: '', description: '' });
   }
 
   handleChange = (e) => {
@@ -32,44 +35,60 @@ class Add extends React.Component {
   }
 
   validate = () => {
-    const { name, text, agree } = this.state;
-    return name.trim() && text.trim() && agree;
+    const { name, title, agree } = this.state;
+    return name.trim() && title.trim() && agree;
   }
 
   render() {
-    const { name, text, bigText } = this.state;
+    const { name, title, description } = this.state;
 
     return (
-      <form className="add">
-        <input
-          id="name"
-          type="text"
-          onChange={this.handleChange}
-          className="add__author"
-          placeholder="Ваше имя"
-          value={name}
-        />
-        <textarea
-          id="text"
-          onChange={this.handleChange}
-          className="add__text"
-          placeholder="Текст новости"
-          value={text}
-        ></textarea>
-        <textarea
-          id="bigText"
-          onChange={this.handleChange}
-          className="add__text"
-          placeholder="Текст новости подробно"
-          value={bigText}
-        ></textarea>
-        <label className="add__checkrule">
-          <input type="checkbox" onChange={this.handleCheckboxChange} /> Я согласен с правилами
-        </label>
-        <button className="add__btn" onClick={this.onBtnClickHandler} disabled={!this.validate()}>
-          Добавить новость
-        </button>
-      </form>
+      <Form>
+        <Form.Group as={Row} controlId="name">
+          <Form.Label column sm="2">
+            Name
+          </Form.Label>
+          <Col sm="10">
+            <Form.Control
+              type="text"
+              onChange={this.handleChange}
+              placeholder="Your name"
+              value={name}
+            />
+          </Col>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Control as="textarea" rows="2"
+            id="title"
+            onChange={this.handleChange}
+            placeholder="Title news"
+            value={title}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Control as="textarea" rows="3"
+            id="description"
+            onChange={this.handleChange}
+            placeholder="Description news"
+            value={description}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId="formCheckbox">
+          <Form.Check
+            custom
+            type="checkbox"
+            onChange={this.handleCheckboxChange}
+            label="I agree to terms"
+          />
+        </Form.Group>
+
+        <Button onClick={this.onBtnClickHandler} disabled={!this.validate()}>
+          Add news
+        </Button>
+      </Form>
     );
   }
 }
